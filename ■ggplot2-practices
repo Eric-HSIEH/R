@@ -1,0 +1,17 @@
+■Line chart
+
+■Source：
+
+高速公路局108 年 2 月國道易壅圔路段彙整表(南/東向)
+https://1968.freeway.gov.tw/storage/pdf/10802%E5%9C%8B%E9%81%93%E6%98%93%E5%A3%85%E5%A1%9E%E8%B7%AF%E6%AE%B5%E3%80%81%E6%99%82%E6%AE%B5%E5%BD%99%E6%95%B4%E8%A1%A8.pdf
+
+■Object：
+
+Time：Satursday 1600-1900 
+Road：國1南向 大雅至台中系統(花博影響) 
+
+■Load packages
+
+install.packages("ggplot2")
+library(ggplot2)
+
