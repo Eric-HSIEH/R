@@ -1,3 +1,26 @@
+■scatter chart
+
+□Title： The scatter chart of traffic volume of Taiwan High Speed Rail
+□Source： The traffic volume statistic table of Taiwan High Speed Rail,Taiwan Railways Administration, MOTC 
+https://www.rb.gov.tw/showpage_list.php?page=3&lmenuid=10&smenuid=71&tmenuid=194&infoid=0&lang=tw&qkeyword=
+
+□Load packages
+
+  library(ggplot2)
+  library(magrittr)
+  
+□Load files and pretreatment
+
+  setwd("C:/Users/User/Desktop")
+  HSR_trafficvolume<-read.csv("TDCS_M07A_20190218_070000.csv")
+  HSR_trafficvolume2<- HSR_trafficvolume %>% mutate(number.of.passenger.by.thousand=t$number.of.passenger/1000)
+
+□scatter
+
+  ggplot(HSR_trafficvolume2,aes(x=HSR_trafficvolume2$number.of.passenger.by.thousand,y=HSR_trafficvolume2$number.of.Trains.Operated))+geom_point(aes(color=year,size=1))+geom_smooth()+labs(title="Scatter of number of passeger and number of trains operated", x="number of trains operated",y="number of passenger")+ scale_color_discrete(breaks = c("106","105","104","103","102","101","100","99","98","97","96"))+ guides(size=FALSE)
+
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+
 ■Line chart
 
 □Title： The line chart of Taiwan highway traffic flow (Toufen City to Pinglin Dist.) in first day of the Chinese Lunar New Year(2016-2018).
@@ -58,6 +81,7 @@
   ggplot(FD1618_2_TP_31,mapping = aes(x=time, y=flow, group=date, colour=date))+geom_line(linetype = "solid",size=1.5)+labs(title="Traffic flow of Toucheng to Pinglin  in first day of\n the Chinese Lunar New Year(2016-2018)", x="time", y="flow")+theme_stata()+theme(axis.title.x = element_text(size = 15, face = "bold", vjust = 0.5, hjust = 0.5))+theme(axis.title.y = element_text(size = 15, face = "bold", vjust = 0.5, hjust = 0.5, angle = 360))+ theme(axis.text.y = element_text(angle = 360))+ theme(plot.title = element_text(size=15,face = "bold"))+scale_color_manual(values =c("#f9c00c","#00b9f1","#7200da"))
 
 ————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+
 ■Bar chart
 
 □Title： The bar chart of the top one to five Taiwan highway(Daya Dist. to Taichung system) traffic flow in 2019/02.
@@ -72,6 +96,7 @@ https://1968.freeway.gov.tw/storage/pdf/10802%E5%9C%8B%E9%81%93%E6%98%93%E5%A3%8
   library(ggplot2)
 
 ————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+
 ■Boxplot chart
 
 □Title： The boxplot chart of Taiwan highway(Neihu Dist. to area of Donghu) mean speed in 2019/02.
@@ -114,6 +139,4 @@ https://1968.freeway.gov.tw/storage/pdf/10802%E5%9C%8B%E9%81%93%E6%98%93%E5%A3%8
   ETCdata_meanspeed2<-ETCdata_meanspeed %>% filter(meanspeed < 150)  #view the dataset and filter the data
   ggplot(ETCdata_meanspeed2,aes(x=vehicletype,y=meanspeed,colour=vehicletype))+geom_boxplot(width=.5,outlier.shape = 1)
 
-
-
-
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
