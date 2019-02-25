@@ -1,17 +1,119 @@
 ■Line chart
 
-■Source：
+□Title： The line chart of Taiwan highway traffic flow (Toufen City to Pinglin Dist.) in first day of the Chinese Lunar New Year(2016-2018).
+□Source：  ETC data
+□Time： the first day of the Chinese Lunar New Year(2016-2019)
+□Road： Highway(Toufen City to Pinglin Dist.)
+  
+□Load packages
 
-高速公路局108 年 2 月國道易壅圔路段彙整表(南/東向)
+  install.packages("ggplot2")
+  install.packages("ggthemes")
+  install.packages("magrittr")
+  install.packages("RColorBrewer")
+  library(magrittr)
+  library(ggplot2)
+  library(ggthemes)
+  library(RColorBrewer)
+
+□ Load file and preceding operation
+
+  setwd("C:/Users/User/Desktop/Eric/data/2016-2018first day")
+
+  FD1618<-do.call(rbind,lapply(list.files(path="C:/Users/User/Desktop/Eric/data/2016-2018first day",pattern="*.csv"),read.table, header=FALSE, sep=",")) 
+
+□filter data
+
+  names(FD1618)<-c("date time", "o", "NS", "VehicleType", "flow") 
+  FD1618_TP<-subset(FD1618, o=="05F0287N")
+  FD1618_TP_31<-subset(FD1618_TP, VehicleType==31)
+  date<-as.Date(FD1618_TP_31$`date time`)
+  FD1618_TP_31<-cbind(FD1618_TP_31,date)
+
+□generate number of time
+
+  n1<-seq(100,2400,by=100)
+  n2<-seq(0030,2330,by=100)
+  t<-c()
+  for (i in 1:48) {
+    if(i%%2==0){
+      t[i]=n1[i/2]
+    }else{
+      t[i]=n2[ceiling(i/2)]
+    }
+  }
+  t2<-c(0000,rep(t[-48],each=6),rep(t[48],each=5))
+  time<-rep(t2,3)
+
+  FD1618_1_TP_31<-cbind(FD1618_TP_31,time)
+
+□aggregate by date and time
+
+  FD1618_2_TP_31<-aggregate(flow~date+time,FD1618_1_TP_31,mean)
+
+□line chart
+
+  FD1618_2_TP_31$date<-as.character(FD1618_2_TP_31$date)
+
+  ggplot(FD1618_2_TP_31,mapping = aes(x=time, y=flow, group=date, colour=date))+geom_line(linetype = "solid",size=1.5)+labs(title="Traffic flow of Toucheng to Pinglin  in first day of\n the Chinese Lunar New Year(2016-2018)", x="time", y="flow")+theme_stata()+theme(axis.title.x = element_text(size = 15, face = "bold", vjust = 0.5, hjust = 0.5))+theme(axis.title.y = element_text(size = 15, face = "bold", vjust = 0.5, hjust = 0.5, angle = 360))+ theme(axis.text.y = element_text(angle = 360))+ theme(plot.title = element_text(size=15,face = "bold"))+scale_color_manual(values =c("#f9c00c","#00b9f1","#7200da"))
+
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+■Bar chart
+
+□Title： The bar chart of the top one to five Taiwan highway(Daya Dist. to Taichung system) traffic flow in 2019/02.
+□Source： The table of national highway roads that may cause traffic jam(southbound/eastbound),National Expressway Bureau
 https://1968.freeway.gov.tw/storage/pdf/10802%E5%9C%8B%E9%81%93%E6%98%93%E5%A3%85%E5%A1%9E%E8%B7%AF%E6%AE%B5%E3%80%81%E6%99%82%E6%AE%B5%E5%BD%99%E6%95%B4%E8%A1%A8.pdf
+□Time： Satursday 16:00-19:00  in 2019/02
+□Road： National Freeway No. 1(southbound)-Daya Dist. to Taichung system(affected by Taichung World Flora Exposition) 
 
-■Object：
+□Load packages
 
-Time：Satursday 1600-1900 
-Road：國1南向 大雅至台中系統(花博影響) 
+  install.packages("ggplot2")
+  library(ggplot2)
 
-■Load packages
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+■Boxplot chart
 
-install.packages("ggplot2")
-library(ggplot2)
+□Title： The boxplot chart of Taiwan highway(Neihu Dist. to area of Donghu) mean speed in 2019/02.
+□Source： The table of national highway roads that may cause traffic jam(northbound/westbound),National Expressway Bureau
+https://1968.freeway.gov.tw/storage/pdf/10802%E5%9C%8B%E9%81%93%E6%98%93%E5%A3%85%E5%A1%9E%E8%B7%AF%E6%AE%B5%E3%80%81%E6%99%82%E6%AE%B5%E5%BD%99%E6%95%B4%E8%A1%A8.pdf
+□Time：  weekdays 07:30-10:30 in 2019/02 
+□Road：  National Freeway No. 1(northbound)-Neihu Dist. to area of Donghu
+
+□Load packages
+
+  library(dplyr)
+  library(magrittr)
+  library(ggplot2)
+  
+□Load files and pretreatment
+
+  setwd("C:/Users/User/Desktop/Eric/data/20190211-0215")
+  ETCdata_meanspeed<-do.call(rbind,lapply(list.files(path="C:/Users/User/Desktop/Eric/data/20190211-0215",pattern="*.csv"),read.table, header=FALSE, sep=",")) 
+  names(ETCdata_meanspeed)<-c("timeinterval","o","d","vehicletype","meanspeed","flow")
+  ETCdata_meanspeed$vehicletype<-as.character(ETCdata_meanspeed$vehicletype)
+
+  #replace code name of vehicletype with Chinese
+  for (i in 1:length(ETCdata_meanspeed$vehicletype)) {
+    if(ETCdata_meanspeed[i,4]==31){
+      ETCdata_meanspeed[i,4]<-"小客車"
+    }else if(ETCdata_meanspeed[i,4]==32){
+      ETCdata_meanspeed[i,4]<-"小貨車"
+    }else if(ETCdata_meanspeed[i,4]==41){
+      ETCdata_meanspeed[i,4]<-"大客車"
+    }else if(ETCdata_meanspeed[i,4]==42){
+      ETCdata_meanspeed[i,4]<-"大貨車"
+    }else{
+      ETCdata_meanspeed[i,4]<-"聯結車"
+    }
+  }
+
+□boxplot
+
+  ggplot(ETCdata_meanspeed,aes(x=vehicletype,y=meanspeed,fill=vehicletype))+geom_boxplot(width=.5) #find there are two extreme outliers
+  ETCdata_meanspeed2<-ETCdata_meanspeed %>% filter(meanspeed < 150)  #view the dataset and filter the data
+  ggplot(ETCdata_meanspeed2,aes(x=vehicletype,y=meanspeed,colour=vehicletype))+geom_boxplot(width=.5,outlier.shape = 1)
+
+
+
 
