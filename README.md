@@ -15,4 +15,4 @@ My exercises are stored in repositories,you can select any following item you ar
 
 * shiny-ETCdata
 * shiny-ETCdata(Dashboard)
-* shiny-HSRdata
+* shiny-THSRdata
