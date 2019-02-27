@@ -1,5 +1,5 @@
 Title：Data analysis of operation data of Taiwan High Speed Rail
-Source：Taiwan High Speed Rail from Railway Bureau
+Source：Taiwan High Speed Rail(THSR) from Railway Bureau
 
 ■Load pacjages 
 
@@ -13,12 +13,12 @@ library(dplyr)
 ■Load file and preceding operation
 
 setwd("C:/Users/User/Desktop/R practice")
-HSR<-read.csv("HSR96-106.csv") #import data
+THSR<-read.csv("HSR96-106.csv") #import data
 pr<-as.character(HSR$Punctuality.rate) %>% substr(1,5) %>% as.numeric() #transfer format for the convenience of calculating
-HSR1<-HSR; HSR1[6]<-pr
-HSR1$passenger<-HSR1$passenger/1000;HSR1$Seat.Kilometers<-HSR1$Seat.Kilometers/1000000 #streamline the data
-colnames(HSR1)<-c("year","month","passenger.thousand","train.times","Seat.Kilometers.million","Punctuality.rate")
-HSR2<-aggregate(cbind(passenger.thousand,train.times,Seat.Kilometers.million,Punctuality.rate)~year,HSR1,mean) #aggregate by year
+THSR1<-THSR; THSR1[6]<-pr
+THSR1$passenger<-THSR1$passenger/1000;THSR1$Seat.Kilometers<-THSR1$Seat.Kilometers/1000000 #streamline the data
+colnames(THSR1)<-c("year","month","passenger.thousand","train.times","Seat.Kilometers.million","Punctuality.rate")
+THSR2<-aggregate(cbind(passenger.thousand,train.times,Seat.Kilometers.million,Punctuality.rate)~year,THSR1,mean) #aggregate by year
 
 ■Shiny
 ui<-fluidPage(    
@@ -32,14 +32,14 @@ ui<-fluidPage(
     # Define the sidebar with one input
     sidebarPanel(
       selectInput("option", "Option:", 
-                  choices=colnames(HSR2)[-1]),
+                  choices=colnames(THSR2)[-1]),
       hr(),
       helpText("statistical data of Taiwan High Speed Rail from Railway Bureau")
     ),
     
     # Create a spot for the barplot
     mainPanel(
-      plotOutput("HSRPlot")  
+      plotOutput("THSRPlot")  
     )
     
   )
@@ -48,10 +48,10 @@ ui<-fluidPage(
 server<-function(input, output) {
   
   # Fill in the spot we created for a plot
-  output$HSRPlot <- renderPlot({
+  output$THSRPlot <- renderPlot({
     
     # Render a barplot
-    barplot(HSR2[,input$option],
+    barplot(THSR2[,input$option],
             col=3,
             main=input$option,
             ylab="statistical data",
