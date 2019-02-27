@@ -1,5 +1,5 @@
 # R
-Here are my exercises of R language,and they are sorted by topic.
+Here are my exercises of data visualization by using R language,and they are sorted by topic.
 
 Please look around,and I hope you can find something may can help.
 
