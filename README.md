@@ -8,10 +8,11 @@ My exercises are stored in repositories,you can select any following item you ar
  
 #### ggplot2：
 
-* data visualization-ggplot2
+* ggplot2-line chart
+* ggplot2-practices
 
 #### shiny：
 
-* data visualization-shiny
-* data visualization-shiny1
-* data visualization-shiny【Dashboard】
+* shiny-ETCdata
+* shiny-ETCdata(Dashboard)
+* shiny-HSRdata
