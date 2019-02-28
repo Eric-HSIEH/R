@@ -84,7 +84,7 @@ https://www.rb.gov.tw/showpage_list.php?page=3&lmenuid=10&smenuid=71&tmenuid=194
 
 ■Bar chart
 
-□Title： The bar chart of the top one to five Taiwan highway(Daya Dist. to Taichung system) traffic flow in 2019/02.
+□Title： The bar chart of the top one to five Taiwan highway(Daya Dist. to Taichung system) origins or destinations in 2019/02.
 □Source： The table of national highway roads that may cause traffic jam(southbound/eastbound),National Expressway Bureau
 https://1968.freeway.gov.tw/storage/pdf/10802%E5%9C%8B%E9%81%93%E6%98%93%E5%A3%85%E5%A1%9E%E8%B7%AF%E6%AE%B5%E3%80%81%E6%99%82%E6%AE%B5%E5%BD%99%E6%95%B4%E8%A1%A8.pdf
 □Time： Satursday 16:00-19:00  in 2019/02
@@ -92,8 +92,72 @@ https://1968.freeway.gov.tw/storage/pdf/10802%E5%9C%8B%E9%81%93%E6%98%93%E5%A3%8
 
 □Load packages
 
+  install.packages("dplyr")
+  install.packages("magrittr")
+  install.packages("stringr")
   install.packages("ggplot2")
+  library(dplyr)
+  library(magrittr)
+  library(stringr)
   library(ggplot2)
+  
+ □Load files and pretreatment
+ 
+  setwd("C:/Users/admin123/Desktop/ETC data(M06A)_10802")
+  ETC10802_M06A<-do.call(rbind,lapply(list.files(path="C:/Users/admin123/Desktop/ETC data(M06A)_10802",pattern="*.csv"),read.table, header=FALSE, sep=","))
+  names(ETC10802_M06A)<-c("VehicleType","oTime","o","dTime","d","TripLength","TripEnd","TripInfomation")
+  ETC10802_M06A_31<-ETC10802_M06A %>% dplyr::filter(VehicleType==31,TripEnd=="Y")  #Because if just use "filter",then will get "Error in filter(ETC10802_M06A_31, o == "01F1774S") : object 'o' not found"
+  ETC10802_M06A_oISDT31<-ETC10802_M06A_31 %>% dplyr::filter(o=="01F1774S")
+  ETC10802_M06A_dISDT31<-ETC10802_M06A_31 %>% dplyr::filter(d=="01F1774S")
+  
+ □Select the top 1 to 5 origins or destinations
+ 
+  s1<-sort(table(ETC10802_M06A_oISDT31$d),decreasing =TRUE)[1:5] #select top 1:5 d
+  s2<-sort(table(ETC10802_M06A_dISDT31$o),decreasing =TRUE)[1:5] #select top 1:5 o
+  
+  oISDT_d<-as.data.frame(s1);oISDT_d$Var1<-as.character(oISDT_d$Var1)
+  dISDT_o<-as.data.frame(s2);dISDT_o$Var1<-as.character(dISDT_o$Var1)
+
+  ETC10802_M06A_oISDT31_1<-ETC10802_M06A_oISDT31 %>% dplyr::filter(d %in% oISDT_d$Var1) 
+  ETC10802_M06A_dISDT31_1<-ETC10802_M06A_dISDT31 %>% dplyr::filter(o %in% dISDT_o$Var1)
+  
+ □Replace the highways code number to Chinese
+ 
+  ETC10802_M06A_oISDT31_1$d<-as.character(ETC10802_M06A_oISDT31_1$d)
+  ETC10802_M06A_dISDT31_1$o<-as.character(ETC10802_M06A_dISDT31_1$o)
+  
+  for (i in 1:length(ETC10802_M06A_oISDT31_1$d)) {
+  if(ETC10802_M06A_oISDT31_1[i,5]=="01F1774S"){
+    ETC10802_M06A_oISDT31_1[i,5]<-"大雅-台中"
+  }else if(ETC10802_M06A_oISDT31_1[i,5]=="01F1802S"){
+    ETC10802_M06A_oISDT31_1[i,5]<-"台中-南屯"
+  }else if(ETC10802_M06A_oISDT31_1[i,5]=="01F1960S"){
+    ETC10802_M06A_oISDT31_1[i,5]<-"彰化系統-彰化(北)"
+  }else if(ETC10802_M06A_oISDT31_1[i,5]=="01F1839S"){
+    ETC10802_M06A_oISDT31_1[i,5]<-"南屯-王田"
+  }else{
+    ETC10802_M06A_oISDT31_1[i,5]<-"彰化(南)-埔鹽系統"
+  }
+}
+
+  for (i in 1:length(ETC10802_M06A_dISDT31_1$o)) {
+    if(ETC10802_M06A_dISDT31_1[i,3]=="01F1664S"){
+      ETC10802_M06A_dISDT31_1[i,3]<-"台中系統-豐原"
+    }else if(ETC10802_M06A_dISDT31_1[i,3]=="01F1725S"){
+      ETC10802_M06A_dISDT31_1[i,3]<-"豐原-大雅"
+    }else if(ETC10802_M06A_dISDT31_1[i,3]=="01F1774S"){
+      ETC10802_M06A_dISDT31_1[i,3]<-"大雅-台中"
+    }else if(ETC10802_M06A_dISDT31_1[i,3]=="01F1621S"){
+      ETC10802_M06A_dISDT31_1[i,3]<-"后里(南)-台中系統"
+    }else{
+      ETC10802_M06A_dISDT31_1[i,3]<-"大甲-中港系統"
+    }
+  }
+  
+ □Barplot
+ 
+  ggplot(ETC10802_M06A_oISDT31_1,aes(x=reorder(d,d,function(x)-length(x))))+geom_bar(aes(fill=d))+geom_text(stat = "count", aes(label = (..count..)), vjust = -1, color=I("blue"), size = 4)
+  ggplot(ETC10802_M06A_dISDT31_1,aes(x=reorder(o,o,function(x)-length(x))))+geom_bar(aes(fill=o))+geom_text(stat = "count", aes(label = (..count..)), vjust = -1, color=I("blue"), size = 4)
 
 ————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
