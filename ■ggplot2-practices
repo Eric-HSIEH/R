@@ -12,11 +12,12 @@ https://www.rb.gov.tw/showpage_list.php?page=3&lmenuid=10&smenuid=71&tmenuid=194
 □Load files and pretreatment
 
   setwd("C:/Users/User/Desktop")
-  HSR_trafficvolume<-read.csv("TDCS_M07A_20190218_070000.csv")
-  HSR_trafficvolume2<- HSR_trafficvolume %>% mutate(number.of.passenger.by.thousand=t$number.of.passenger/1000)
+  HSR_trafficvolume<-read.csv("HSR_trafficvolume.csv") 
+  HSR_trafficvolume2<- HSR_trafficvolume %>% mutate(number.of.passenger.by.thousand=HSR_trafficvolume$number.of.passenger/1000)
 
 □scatter
 
+  HSR_trafficvolume2$year<-as.character(HSR_trafficvolume2$year)
   ggplot(HSR_trafficvolume2,aes(x=HSR_trafficvolume2$number.of.passenger.by.thousand,y=HSR_trafficvolume2$number.of.Trains.Operated))+geom_point(aes(color=year,size=1))+geom_smooth()+labs(title="Scatter of number of passeger and number of trains operated", x="number of trains operated",y="number of passenger")+ scale_color_discrete(breaks = c("106","105","104","103","102","101","100","99","98","97","96"))+ guides(size=FALSE)
 
 ————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
