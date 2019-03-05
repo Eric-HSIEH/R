@@ -1,7 +1,6 @@
-Title：Highway traffic flow of the first and second day of the Chinese New Year
-Source：ETC(Electronic Toll Collection) data
+#Source：ETC(Electronic Toll Collection) data
 
-■load packages
+#load packages
 
 install.packages(shiny)
 install.packages(ggplot2)
@@ -10,7 +9,7 @@ library(ggplot2)
 library(ggthemes)
 library(shiny)
 
-■load file and preceding operation
+#load file and preceding operation
 
 setwd("C:/Users/User/Desktop/Eric/data/2016-2019")
 
@@ -25,7 +24,6 @@ Y1619_TP_31<-cbind(Y1619_TP_31,date)
 n1<-seq(100,2400,by=100)
 n2<-seq(0030,2330,by=100)
 
-#generate number of time
 t<-c()
 for (i in 1:48) {
   if(i%%2==0){
@@ -39,12 +37,10 @@ time<-rep(t2,8)
 
 Y1619_1_TP_31<-cbind(Y1619_TP_31,time)
 
-■aggregate flow by date and time
-
 ETCdata<-aggregate(flow~date+time,Y1619_1_TP_31,mean)
 ETCdata$date<-as.character(ETCdata$date)
 
-■shiny
+#shiny
 
 a1<-subset(ETCdata,date=="2016-02-08")
 b1<-subset(ETCdata,date=="2017-01-28")
@@ -57,23 +53,23 @@ d2<-subset(ETCdata,date=="2019-02-06")
 
 ui <- fluidPage(
   
-  # App title ----
+  
   titlePanel("ETC data of the first and second day of the Chinese New Year"),
   
-  # Sidebar layout with input and output definitions ----
+ 
   sidebarLayout(
     
-    # Sidebar panel for inputs ----
+    
     sidebarPanel(
       
-      # Input: Selector for variable to plot----
+      
       selectInput(inputId = "date",
                   label = "Date:",
                   choices = unique(ETCdata$date))
       
     ),
     
-    # Main panel for displaying outputs ----
+    
     mainPanel(
       
       tabsetPanel(type = "tabs",
@@ -86,10 +82,10 @@ ui <- fluidPage(
   )
 )
 
-# Define server logic to plot various variables----
+
 server <- function(input, output) {
   
-  # Generate a plot of the requested variable----
+  
    output$ETCPlot <- renderPlot({
     if(input$date=="2016-02-08"){
       ggplot(a1,aes(x=time,y=flow,group = 1))+geom_line(linetype = "solid",size=1.5,color="#00CED1")+labs(title = paste("Traffic flow in",input$date),x="time",y="flow")+theme_stata()+theme(axis.title.x = element_text(size = 15, face = "bold", vjust = 0.5, hjust = 0.5))+theme(axis.title.y = element_text(size = 15, face = "bold", vjust = 0.5, hjust = 0.5, angle = 360))+ theme(axis.text.y = element_text(angle = 360))+ theme(plot.title = element_text(size=15,face = "bold"))
@@ -149,5 +145,5 @@ server <- function(input, output) {
   })
 }
 
-# Create Shiny app ----
+
 shinyApp(ui, server)
