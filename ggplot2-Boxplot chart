@@ -1,0 +1,35 @@
+#Source： The table of national highway roads that may cause traffic jam(northbound/westbound),National Expressway Bureau
+(https://1968.freeway.gov.tw/storage/pdf/10802%E5%9C%8B%E9%81%93%E6%98%93%E5%A3%85%E5%A1%9E%E8%B7%AF%E6%AE%B5%E3%80%81%E6%99%82%E6%AE%B5%E5%BD%99%E6%95%B4%E8%A1%A8.pdf)
+
+#Load packages
+
+  library(dplyr)
+  library(magrittr)
+  library(ggplot2)
+  
+#Load files and pretreatment
+
+  setwd("C:/Users/User/Desktop/Eric/data/20190211-0215")
+  ETCdata_meanspeed<-do.call(rbind,lapply(list.files(path="C:/Users/User/Desktop/Eric/data/20190211-0215",pattern="*.csv"),read.table, header=FALSE, sep=",")) 
+  names(ETCdata_meanspeed)<-c("timeinterval","o","d","vehicletype","meanspeed","flow")
+  ETCdata_meanspeed$vehicletype<-as.character(ETCdata_meanspeed$vehicletype)
+
+#replace code name of vehicletype with Chinese
+  for (i in 1:length(ETCdata_meanspeed$vehicletype)) {
+    if(ETCdata_meanspeed[i,4]==31){
+      ETCdata_meanspeed[i,4]<-"小客車"
+    }else if(ETCdata_meanspeed[i,4]==32){
+      ETCdata_meanspeed[i,4]<-"小貨車"
+    }else if(ETCdata_meanspeed[i,4]==41){
+      ETCdata_meanspeed[i,4]<-"大客車"
+    }else if(ETCdata_meanspeed[i,4]==42){
+      ETCdata_meanspeed[i,4]<-"大貨車"
+    }else{
+      ETCdata_meanspeed[i,4]<-"聯結車"
+    }
+  }
+
+#boxplot
+  ggplot(ETCdata_meanspeed,aes(x=vehicletype,y=meanspeed,fill=vehicletype))+geom_boxplot(width=.5)+labs(title="Box plot of meanspeed")+theme(plot.title=element_text(hjust = 0.5,face="bold",size=15)) #find there are two extreme outliers
+  ETCdata_meanspeed2<-ETCdata_meanspeed %>% filter(meanspeed < 150)  #view the dataset and filter the data
+  ggplot(ETCdata_meanspeed2,aes(x=vehicletype,y=meanspeed,colour=vehicletype))+geom_boxplot(width=.5,outlier.shape = 1)+labs(title="Box plot of meanspeed")+theme(plot.title=element_text(hjust = 0.5,face="bold",size=15)) #find there are two extreme outliers
