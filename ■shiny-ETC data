@@ -17,6 +17,11 @@ setwd("C:/Users/User/Desktop/Eric/data/2016-2019")
 Y1619<-do.call(rbind,lapply(list.files(path="C:/Users/User/Desktop/Eric/data/2016-2019",pattern="*.csv"),read.table, header=FALSE, sep=","))
 
 names(Y1619)<-c("date time", "o", "NS", "VehicleType", "flow")
+
+Y1619_TP_31<-Y1619 %>% filter(o=="05F0287N",VehicleType==31)
+date<-as.Date(Y1619_TP_31$`date time`)
+Y1619_TP_31<-cbind(Y1619_TP_31,date)
+
 n1<-seq(100,2400,by=100)
 n2<-seq(0030,2330,by=100)
 
