@@ -8,8 +8,10 @@ My exercises are stored in repositories,you can select any following item you ar
  
 #### ggplot2：
 
-* ggplot2-line chart
-* ggplot2-practices
+* ggplot2-scatter chart
+* ggplot2-Line chart
+* ggplot2-Bar chart
+* ggplot2-Boxplot chart
 
 #### shiny：
 
