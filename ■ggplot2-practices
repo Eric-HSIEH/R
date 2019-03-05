@@ -199,8 +199,8 @@ https://1968.freeway.gov.tw/storage/pdf/10802%E5%9C%8B%E9%81%93%E6%98%93%E5%A3%8
 
 □boxplot
 
-  ggplot(ETCdata_meanspeed,aes(x=vehicletype,y=meanspeed,fill=vehicletype))+geom_boxplot(width=.5) #find there are two extreme outliers
+  ggplot(ETCdata_meanspeed,aes(x=vehicletype,y=meanspeed,fill=vehicletype))+geom_boxplot(width=.5)+labs(title="Box plot of meanspeed")+theme(plot.title=element_text(hjust = 0.5,face="bold",size=15)) #find there are two extreme outliers
   ETCdata_meanspeed2<-ETCdata_meanspeed %>% filter(meanspeed < 150)  #view the dataset and filter the data
-  ggplot(ETCdata_meanspeed2,aes(x=vehicletype,y=meanspeed,colour=vehicletype))+geom_boxplot(width=.5,outlier.shape = 1)
+  ggplot(ETCdata_meanspeed2,aes(x=vehicletype,y=meanspeed,colour=vehicletype))+geom_boxplot(width=.5,outlier.shape = 1)+labs(title="Box plot of meanspeed")+theme(plot.title=element_text(hjust = 0.5,face="bold",size=15)) #find there are two extreme outliers
 
 ————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
