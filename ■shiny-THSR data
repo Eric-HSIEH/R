@@ -1,7 +1,6 @@
-Title：Data analysis of operation data of Taiwan High Speed Rail
-Source：Taiwan High Speed Rail(THSR) from Railway Bureau
+#Source：Taiwan High Speed Rail(THSR) from Railway Bureau
 
-■Load pacjages 
+#Load pacjages 
 
 install.packages("magrittr")
 install.packages("shiny")
@@ -10,26 +9,26 @@ library(magrittr)
 library(shiny)
 library(dplyr)
 
-■Load file and preceding operation
+#Load file and preceding operation
 
 setwd("C:/Users/User/Desktop/R practice")
-THSR<-read.csv("HSR96-106.csv") #import data
-pr<-as.character(HSR$Punctuality.rate) %>% substr(1,5) %>% as.numeric() #transfer format for the convenience of calculating
+THSR<-read.csv("HSR96-106.csv") 
+pr<-as.character(HSR$Punctuality.rate) %>% substr(1,5) %>% as.numeric() 
 THSR1<-THSR; THSR1[6]<-pr
-THSR1$passenger<-THSR1$passenger/1000;THSR1$Seat.Kilometers<-THSR1$Seat.Kilometers/1000000 #streamline the data
+THSR1$passenger<-THSR1$passenger/1000;THSR1$Seat.Kilometers<-THSR1$Seat.Kilometers/1000000 
 colnames(THSR1)<-c("year","month","passenger.thousand","train.times","Seat.Kilometers.million","Punctuality.rate")
-THSR2<-aggregate(cbind(passenger.thousand,train.times,Seat.Kilometers.million,Punctuality.rate)~year,THSR1,mean) #aggregate by year
+THSR2<-aggregate(cbind(passenger.thousand,train.times,Seat.Kilometers.million,Punctuality.rate)~year,THSR1,mean) 
 
-■Shiny
+#Shiny
 ui<-fluidPage(    
   
-  # Give the page a title
+ 
   titlePanel("operation data of Taiwan High Speed Rail in 2007-2017),
   
-  # Generate a row with a sidebar
+  
   sidebarLayout(      
     
-    # Define the sidebar with one input
+   
     sidebarPanel(
       selectInput("option", "Option:", 
                   choices=colnames(THSR2)[-1]),
@@ -37,7 +36,7 @@ ui<-fluidPage(
       helpText("statistical data of Taiwan High Speed Rail from Railway Bureau")
     ),
     
-    # Create a spot for the barplot
+   
     mainPanel(
       plotOutput("THSRPlot")  
     )
@@ -47,10 +46,10 @@ ui<-fluidPage(
 
 server<-function(input, output) {
   
-  # Fill in the spot we created for a plot
+ 
   output$THSRPlot <- renderPlot({
     
-    # Render a barplot
+
     barplot(THSR2[,input$option],
             col=3,
             main=input$option,
