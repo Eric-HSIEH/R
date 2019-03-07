@@ -13,7 +13,7 @@ library(dplyr)
 
 setwd("C:/Users/User/Desktop/R practice")
 THSR<-read.csv("HSR96-106.csv") 
-pr<-as.character(HSR$Punctuality.rate) %>% substr(1,5) %>% as.numeric() 
+pr<-as.character(THSR$Punctuality.rate) %>% substr(1,5) %>% as.numeric() 
 THSR1<-THSR; THSR1[6]<-pr
 THSR1$passenger<-THSR1$passenger/1000;THSR1$Seat.Kilometers<-THSR1$Seat.Kilometers/1000000 
 colnames(THSR1)<-c("year","month","passenger.thousand","train.times","Seat.Kilometers.million","Punctuality.rate")
